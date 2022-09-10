@@ -24,3 +24,10 @@ https://github.com/AlexKomzzz/library-app.git
     protoc -I=grpc_api/proto               \
             --go_out=. --go-grpc_out=.\
             grpc_api/proto/library.proto
+
+### Запрос клиента должен состоять из:
+1. ключевого слова ("authors" - если ищем авторов по книге, или "book" - если ищем книгу по авторам)
+2. после ключевого слова следуют аргументы в виде названия книги (через пробелы), либо фамилии авторов
+
+Пример запроса: authors Harry Potter
+    result: Rowling

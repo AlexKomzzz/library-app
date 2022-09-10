@@ -5,8 +5,8 @@ package api;
 option go_package = "./pkg/api";
 
 service Library {
-    rpc SeachAuthor(Book) returns (Authors) {}
-    rpc SeachBook(Author) returns (Books) {}
+    rpc SearchAuthor(Book) returns (Authors) {}
+    rpc SearchBook(Author) returns (Books) {}
 }
 
 message IdRequest {
