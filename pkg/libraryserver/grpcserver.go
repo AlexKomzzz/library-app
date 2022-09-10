@@ -18,10 +18,10 @@ func NewGRPCServer(db *sql.DB) *GRPCserver {
 	}
 }
 
-func (s *GRPCserver) SeachAuthor(ctx context.Context, book *api.Book) (*api.Authors, error) {
+func (s *GRPCserver) SearchAuthor(ctx context.Context, book *api.Book) (*api.Authors, error) {
 	return &api.Authors{}, nil
 }
 
-func (s *GRPCserver) SeachBook(ctx context.Context, author *api.Author) (*api.Books, error) {
+func (s *GRPCserver) SearchBook(ctx context.Context, author *api.Author) (*api.Books, error) {
 	return &api.Books{}, nil
 }
