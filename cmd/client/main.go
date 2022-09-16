@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/AlexKomzzz/library-app/pkg/api"
 	"google.golang.org/grpc"
@@ -12,12 +13,6 @@ import (
 )
 
 func main() {
-	flag.Parse()
-
-	if flag.NArg() < 2 {
-		log.Fatal("not enough arguments")
-	}
-
 	conn, err := grpc.Dial(":8080", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		log.Fatal("error connect client: ", err)
@@ -27,11 +22,28 @@ func main() {
 
 	client := api.NewLibraryClient(conn)
 
+	//for {
+	//in := bufio.NewReader(os.Stdin)
+
+	//req, _, err := in.ReadLine()
+	//
+
+	flag.Parse()
+
+	if flag.NArg() < 2 {
+		log.Fatal("not enough arguments")
+	}
+
 	switch {
-	case flag.Arg(0) == "authors":
+	case flag.Arg(0) == "book": // если первое слово book значит вызываем метод поиска автора по книге
 		var nameBook string
+		// считываем название книги
 		for i := 1; i < flag.NArg(); i++ {
-			nameBook = fmt.Sprint(nameBook, "", flag.Arg(i))
+			if i == 1 {
+				nameBook = flag.Arg(i)
+			} else {
+				nameBook = fmt.Sprint(nameBook, " ", strings.Replace(flag.Arg(i), " ", "", -1))
+			}
 		}
 
 		book := &api.Book{
@@ -44,7 +56,8 @@ func main() {
 		}
 
 		fmt.Println(res.GetAuthors())
-	case flag.Arg(0) == "book":
+
+	case flag.Arg(0) == "author":
 
 		author := &api.Author{
 			Name: flag.Arg(1),
@@ -56,4 +69,5 @@ func main() {
 
 		fmt.Println(res.GetBooks())
 	}
+	//}
 }

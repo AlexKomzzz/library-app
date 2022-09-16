@@ -21,7 +21,7 @@ https://github.com/AlexKomzzz/library-app.git
     
 либо
 
-    protoc -I=grpc_api/proto               \
+    protoc -I=grpc_api/proto          \
             --go_out=. --go-grpc_out=.\
             grpc_api/proto/library.proto
 
@@ -31,3 +31,67 @@ https://github.com/AlexKomzzz/library-app.git
 
 Пример запроса: authors Harry Potter
     result: Rowling
+
+
+
+Docker MySQL
+    docker run --name mysql -dp 3306:3306 -e MYSQL_ROOT_PASSWORD='qwerty' -v tom:/var/lib/mysql mysql
+    docker run --name mysql -dp 3306:3306 -e MYSQL_ROOT_PASSWORD='qwerty' -v /home/alex/GoProject/library-app/docker/volumes/tom:/var/lib/mysql mysql
+
+    при запуске контейнера указать путь к volume 
+    docker run --name mysql -dp 3306:3306 -e MYSQL_ROOT_PASSWORD='qwerty' -v $'your_path'/library-app/docker/volumes/tom:/var/lib/mysql mysql
+
+
+
+зайти в оболочку
+
+    docker exec -it mysql /bin/bash
+
+
+    mysql -uroot -pqwerty  
+
+создание базы данных:
+    $ CREATE DATABASE library;
+    $ use library;
+
+создание таблицы:
+    $ create table if not exists books 
+        ( 
+            id INT NOT NULL AUTO_INCREMENT, 
+            title VARCHAR(255),
+            PRIMARY KEY (id)
+        );
+
+    $ create table if not exists authors
+        ( 
+            id INT NOT NULL AUTO_INCREMENT, 
+            surname VARCHAR(255),
+            PRIMARY KEY (id)
+        );
+
+    $ create table if not exists authors_books
+        ( 
+            id_book INT, 
+            id_author INT,
+            FOREIGN KEY (id_book) REFERENCES books(id),
+            FOREIGN KEY (id_author) REFERENCES authors(id)
+        );
+
+    $ DESC authors_books  - просмотр состава таблицы
+
+    $ INSERT INTO books (title) VALUES ('harry potter');
+    $ INSERT INTO authors (surname) VALUES ('Rowling');
+    $ INSERT INTO authors_books (id_book, id_author) VALUES (1, 1);
+
+    SELECT authors.surname FROM books JOIN authors_books ON books.id = authors_books.id_book JOIN authors ON authors_books.id_author = authors.id WHERE books.title = 'hobbit';
+
+
+Содержание БД:
+3 ТАБЛИЦЫ - книги, авторы и автор-книга
+КНИГИ - 'harry potter', 'fantstic animals', 'hobbit'
+АВТОРЫ - 'Rowling', 'Tolkin'
+
+
+Запуск клиента:
+    $ go run ./cmd/client/main.go author Tolkin
+    $ go run ./cmd/client/main.go book hobbit
