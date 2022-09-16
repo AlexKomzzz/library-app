@@ -19,7 +19,7 @@ message Author {
 }
 
 message Authors {
-    Author authors = 1;
+    string authors = 1;
 }
 
 message Book {
@@ -29,5 +29,5 @@ message Book {
 }
 
 message Books {
-    Book books = 1;
+    string books = 1;
 }
