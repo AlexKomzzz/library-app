@@ -1,10 +1,11 @@
 package main
 
 import (
+	"bufio"
 	"context"
-	"flag"
 	"fmt"
 	"log"
+	"os"
 	"strings"
 
 	"github.com/AlexKomzzz/library-app/pkg/api"
@@ -22,52 +23,51 @@ func main() {
 
 	client := api.NewLibraryClient(conn)
 
-	//for {
-	//in := bufio.NewReader(os.Stdin)
+	for {
+		in := bufio.NewReader(os.Stdin)
 
-	//req, _, err := in.ReadLine()
-	//
+		req, _, err := in.ReadLine()
+		if err != nil {
+			log.Fatal("the request failed: ", err)
+		}
 
-	flag.Parse()
+		request := strings.Split(string(req), " ")
 
-	if flag.NArg() < 2 {
-		log.Fatal("not enough arguments")
-	}
+		if len(request) < 2 {
+			log.Fatal("not enough arguments")
+		}
 
-	switch {
-	case flag.Arg(0) == "book": // если первое слово book значит вызываем метод поиска автора по книге
-		var nameBook string
-		// считываем название книги
-		for i := 1; i < flag.NArg(); i++ {
-			if i == 1 {
-				nameBook = flag.Arg(i)
-			} else {
-				nameBook = fmt.Sprint(nameBook, " ", strings.Replace(flag.Arg(i), " ", "", -1))
+		switch {
+		case request[0] == "book": // если первое слово book значит вызываем метод поиска автора по книге
+			nameBook := request[1]
+			// считываем название книги
+			for i := 2; i < len(request); i++ {
+				nameBook = fmt.Sprint(nameBook, " ", request[i])
 			}
+
+			book := &api.Book{
+				Title: nameBook,
+			}
+
+			res, err := client.SearchAuthor(context.Background(), book)
+			if err != nil {
+				log.Fatal("error seachAuthor: ", err)
+			}
+
+			fmt.Println(res.GetAuthors())
+
+		case request[0] == "author":
+
+			author := &api.Author{
+				Name: request[1],
+			}
+
+			res, err := client.SearchBook(context.Background(), author)
+			if err != nil {
+				log.Fatal("error searchBook: ", err)
+			}
+
+			fmt.Println(res.GetBooks())
 		}
-
-		book := &api.Book{
-			Title: nameBook,
-		}
-
-		res, err := client.SearchAuthor(context.Background(), book)
-		if err != nil {
-			log.Fatal("error seachAuthor: ", err)
-		}
-
-		fmt.Println(res.GetAuthors())
-
-	case flag.Arg(0) == "author":
-
-		author := &api.Author{
-			Name: flag.Arg(1),
-		}
-		res, err := client.SearchBook(context.Background(), author)
-		if err != nil {
-			log.Fatal("error searchBook: ", err)
-		}
-
-		fmt.Println(res.GetBooks())
 	}
-	//}
 }

@@ -35,7 +35,7 @@ https://github.com/AlexKomzzz/library-app.git
 
 
 Docker MySQL
-    docker run --name mysql -dp 3306:3306 -e MYSQL_ROOT_PASSWORD='qwerty' -v tom:/var/lib/mysql mysql
+    docker run --name mysql -dp 3306:3306 -e MYSQL_ROOT_PASSWORD='qwerty' -v tom:/var/lib/mysql --network mynet mysql
     docker run --name mysql -dp 3306:3306 -e MYSQL_ROOT_PASSWORD='qwerty' -v /home/alex/GoProject/library-app/docker/volumes/tom:/var/lib/mysql mysql
 
     при запуске контейнера указать путь к volume 
@@ -93,5 +93,26 @@ Docker MySQL
 
 
 Запуск клиента:
+
     $ go run ./cmd/client/main.go author Tolkin
     $ go run ./cmd/client/main.go book hobbit
+
+
+Создать docker образ:
+
+    $ docker build -f ./dockerfile.multi -t lib .
+
+Создать и запустить контейнер:
+
+    $ docker run -it -dp 8080:8080 --network mynet --rm --name library lib
+
+Запустить клиента из конетейнера:
+
+    $ docker exec -it library /client
+
+
+## Docker compose
+
+Сборка и запуск:
+
+    $ docker compose up --build -d
