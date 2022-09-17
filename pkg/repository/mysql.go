@@ -7,7 +7,8 @@ import (
 )
 
 func NewMysqlDB() (*sql.DB, error) {
-	db, err := sql.Open("mysql", "root:qwerty@tcp(127.0.0.1:3306)/library")
+	// db, err := sql.Open("mysql", "root:qwerty@tcp(127.0.0.1:3306)/library")
+	db, err := sql.Open("mysql", "root:qwerty@tcp(mysql:3306)/library")
 
 	if err != nil {
 		return nil, err
