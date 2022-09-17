@@ -25,5 +25,5 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-qwerty}
 
-#volumes:
-#  tom:
+volumes:
+  tom:
